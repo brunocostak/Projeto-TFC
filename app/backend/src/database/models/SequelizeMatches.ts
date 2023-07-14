@@ -55,25 +55,26 @@ Matches.init(
   },
 );
 
-// Defina os relacionamentos
 Matches.belongsTo(TeamsModel, {
-  as: 'homeTeam', // Alias para a associação com a equipe da casa
-  foreignKey: 'home_team_id', // Coluna que representa o ID da equipe da casa na tabela Matches
+  as: 'homeTeam',
+  foreignKey: 'home_team_id',
+  targetKey: 'id',
 });
 
 Matches.belongsTo(TeamsModel, {
-  as: 'awayTeam', // Alias para a associação com a equipe visitante
-  foreignKey: 'away_team_id', // Coluna que representa o ID da equipe visitante na tabela Matches
+  as: 'awayTeam',
+  foreignKey: 'away_team_id',
+  targetKey: 'id',
 });
 
 TeamsModel.hasMany(Matches, {
-  as: 'homeMatches', // Alias para a associação com os jogos em casa
-  foreignKey: 'home_team_id', // Coluna que representa o ID da equipe da casa na tabela Matches
+  as: 'homeMatches',
+  foreignKey: 'home_team_id',
 });
 
 TeamsModel.hasMany(Matches, {
-  as: 'awayMatches', // Alias para a associação com os jogos como visitante
-  foreignKey: 'away_team_id', // Coluna que representa o ID da equipe visitante na tabela Matches
+  as: 'awayMatches',
+  foreignKey: 'away_team_id',
 });
 
 export default Matches;

@@ -1,0 +1,20 @@
+import { Request, Response } from 'express';
+import MatchesService from '../service/matches.service';
+
+export default class MatchesController {
+  constructor(private service = new MatchesService()) {}
+
+  async findAll(req: Request, res: Response): Promise<void> {
+    const { inProgress } = req.query;
+    const isInProgress = inProgress === 'true';
+
+    if (isInProgress) {
+      const data = await this.service.InProgress(isInProgress);
+      res.status(200).json(data);
+      return;
+    }
+
+    const data = await this.service.findAll();
+    res.status(200).json(data);
+  }
+}
