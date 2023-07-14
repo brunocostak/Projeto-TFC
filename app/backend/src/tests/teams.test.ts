@@ -11,6 +11,7 @@ import allTeams from './mocks/teams.mock';
 const { app } = new App();
 
 const { expect } = chai;
+chai.use(chaiHttp);
 
 describe('Teams', () => {
     /**
@@ -18,15 +19,25 @@ describe('Teams', () => {
      */
     
     let chaiHttpResponse: any;
+
+    afterEach(() => {
+        sinon.restore();
+    })
     
     it('Should return all teams', async () => {
+        // sinon.stub(TeamsModel, 'findAll').resolves(allTeams as any);
+        // const result = await TeamsModel.findAll();
+        // expect(result).to.be.eq(allTeams);
         sinon.stub(TeamsModel, 'findAll').resolves(allTeams as any);
-        const result = await TeamsModel.findAll();
-        expect(result).to.be.eq(allTeams);
+        chaiHttpResponse = await chai.request(app).get('/teams');
+        expect(chaiHttpResponse.body).to.be.eq(allTeams);
     })
     it('Should return a team by id', async () => {
+        // sinon.stub(TeamsModel, 'findByPk').resolves(allTeams[0] as any);
+        // const result = await TeamsModel.findByPk(1);
+        // expect(result).to.be.eq(allTeams[0]);
         sinon.stub(TeamsModel, 'findByPk').resolves(allTeams[0] as any);
-        const result = await TeamsModel.findByPk(1);
-        expect(result).to.be.eq(allTeams[0]);
+        chaiHttpResponse = await chai.request(app).get('/teams/1');
+        expect(chaiHttpResponse.body).to.be.eq(allTeams[0]);
     })
 })

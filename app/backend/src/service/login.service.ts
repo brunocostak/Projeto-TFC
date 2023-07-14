@@ -14,13 +14,14 @@ export default class UserService implements IUserModel {
 
   async login(data: IUser): Promise<ITokens | null> {
     const dbData = await this.model.login(data);
-    if (dbData && !bcrypt.compareSync(data.password, dbData.password)) {
-      return null;
+    if (dbData && bcrypt.compareSync(data.password, dbData.password)) {
+      const payload = {
+        email: dbData?.email,
+      };
+      const token = this.jwtService.sign(payload);
+      console.log(token);
+      return { token };
     }
-    const payload = {
-      email: dbData?.email,
-    };
-    const token = this.jwtService.sign(payload);
-    return { token };
+    return null;
   }
 }
