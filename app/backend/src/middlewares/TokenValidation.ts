@@ -11,26 +11,27 @@ interface AuthenticatedRequest extends Request {
   user?: DecodedToken | string;
 }
 
-const validateTokenMiddleware = (
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction,
-): void | Response => {
-  const token = req.headers.authorization;
+const validateTokenMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction)
+: void | Response => {
+  const authHeader = req.headers.authorization;
+  const erro = 'Token must be a valid token';
+  if (!authHeader) return res.status(401).json({ message: 'Token not found' });
 
-  if (!token) {
-    return res.status(401).json({ message: 'Token not found' });
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: erro });
   }
+
+  const token = authHeader.split(' ')[1];
 
   try {
     const decodedToken = JWT.verify(token) as DecodedToken;
     if (!decodedToken) {
-      return res.status(401).json({ message: 'Token must be a valid token' });
+      return res.status(401).json({ message: erro });
     }
     req.user = decodedToken;
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Token must be a valid token' });
+    return res.status(401).json({ message: error });
   }
 };
 
