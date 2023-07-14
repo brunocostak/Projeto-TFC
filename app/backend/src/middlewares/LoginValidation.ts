@@ -11,7 +11,7 @@ const validationEmailAndPassword = (req:Request, res:Response, next:NextFunction
   const testEmail = emailRegex.test(email);
   console.log(testEmail);
   if (!testEmail || password.length < maxLenghtPassword) {
-    res.status(400).json({ message: 'Invalid email or password' });
+    res.status(401).json({ message: 'Invalid email or password' });
     return;
   }
   next();

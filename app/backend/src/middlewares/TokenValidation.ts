@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
+import UserModel from '../database/models/SequelizeUser';
 import JWT from '../utils/JWT';
 
 interface DecodedToken extends JwtPayload {
@@ -7,7 +8,7 @@ interface DecodedToken extends JwtPayload {
 }
 
 interface AuthenticatedRequest extends Request {
-  user?: DecodedToken;
+  user?: DecodedToken | string;
 }
 
 const validateTokenMiddleware = (
@@ -23,6 +24,9 @@ const validateTokenMiddleware = (
 
   try {
     const decodedToken = JWT.verify(token) as DecodedToken;
+    if (!decodedToken) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
     req.user = decodedToken;
     next();
   } catch (error) {
@@ -30,14 +34,20 @@ const validateTokenMiddleware = (
   }
 };
 
-const getRole = (req: AuthenticatedRequest, res: Response): void => {
-  const { role } = req.user || {};
+const getRole = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  const { email } = req.user as DecodedToken;
 
-  if (!role) {
-    res.status(401).json({ message: 'User role not found' });
-    return;
+  try {
+    const user = await UserModel.findOne({ where: { email } });
+    if (!user) {
+      res.status(401).json({ message: 'User not found' });
+      return;
+    }
+    const { role } = user;
+    res.status(200).json({ role });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
   }
-
-  res.status(200).json({ role });
 };
+
 export { validateTokenMiddleware, getRole };

@@ -11,11 +11,11 @@ export default class JWT {
     return sign(payload, JWT.secret, JWT.jwtConfig);
   }
 
-  static verify(token: string): JwtPayload | string {
+  static verify(token: string): JwtPayload | null {
     try {
       return verify(token, this.secret) as JwtPayload;
     } catch (error) {
-      return 'Invalid token';
+      return null;
     }
   }
 }
