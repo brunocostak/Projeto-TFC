@@ -7,7 +7,7 @@ export default class LoginController {
   async login(req: Request, res: Response): Promise<void> {
     const token = await this.service.login(req.body);
     if (!token) {
-      res.status(401).json({ message: 'Invalid credentials' });
+      res.status(401).json({ message: 'Invalid email or password' });
       return;
     }
     res.status(200).json(token);
