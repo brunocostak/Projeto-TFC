@@ -16,10 +16,9 @@ export default class UserService implements IUserModel {
     const dbData = await this.model.login(data);
     if (dbData && bcrypt.compareSync(data.password, dbData.password)) {
       const payload = {
-        email: dbData?.email,
+        email: dbData.email,
       };
       const token = this.jwtService.sign(payload);
-      console.log(token);
       return { token };
     }
     return null;
