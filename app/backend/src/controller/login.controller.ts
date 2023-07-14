@@ -5,20 +5,11 @@ export default class LoginController {
   constructor(private service = new LoginService()) {}
 
   async login(req: Request, res: Response): Promise<void> {
-    const { email, password } = req.body;
-    try {
-      if (!email || !password) {
-        res.status(400).json({ message: 'All fields must be filled' });
-        return;
-      }
-      const token = await this.service.login(req.body);
-      if (!token) {
-        res.status(401).json({ message: 'Invalid credentials' });
-        return;
-      }
-      res.status(200).json(token);
-    } catch (err) {
-      res.status(500).json({ message: err.message });
+    const token = await this.service.login(req.body);
+    if (!token) {
+      res.status(401).json({ message: 'Invalid credentials' });
+      return;
     }
+    res.status(200).json(token);
   }
 }
