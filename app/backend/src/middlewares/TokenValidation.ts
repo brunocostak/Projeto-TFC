@@ -25,7 +25,7 @@ const validateTokenMiddleware = (
   try {
     const decodedToken = JWT.verify(token) as DecodedToken;
     if (!decodedToken) {
-      return res.status(401).json({ message: 'Invalid token' });
+      return res.status(401).json({ message: 'Token must be a valid token' });
     }
     req.user = decodedToken;
     next();
