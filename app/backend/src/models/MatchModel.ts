@@ -33,4 +33,15 @@ export default class MatchesModel {
 
     return matches;
   }
+
+  async updateFinish(id: string): Promise<void> {
+    await this.model.update(
+      { inProgress: false },
+      {
+        where: {
+          id,
+        },
+      },
+    );
+  }
 }

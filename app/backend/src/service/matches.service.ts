@@ -25,4 +25,8 @@ export default class MatchesService {
     const dbData = await this.model.InProgress(value);
     return dbData;
   }
+
+  async updateFinish(id: string): Promise<void> {
+    await this.model.updateFinish(id);
+  }
 }
