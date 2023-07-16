@@ -8,13 +8,12 @@ export default class MatchesController {
     const { inProgress } = req.query;
     const isInProgress = inProgress === 'true';
 
-    if (isInProgress) {
+    if (inProgress === undefined) {
+      const data = await this.service.findAll();
+      res.status(200).json(data);
+    } else {
       const data = await this.service.InProgress(isInProgress);
       res.status(200).json(data);
-      return;
     }
-
-    const data = await this.service.findAll();
-    res.status(200).json(data);
   }
 }
