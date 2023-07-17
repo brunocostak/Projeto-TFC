@@ -62,4 +62,13 @@ export default class MatchesModel {
   async createMatche(body: IMatcheService): Promise<IMatcheCreate> {
     return this.model.create({ ...body, inProgress: true });
   }
+
+  async leaderboard(): Promise<IMatcheCreate[]> {
+    const result = await this.model.findAll({
+      where: {
+        inProgress: false,
+      },
+    });
+    return result;
+  }
 }

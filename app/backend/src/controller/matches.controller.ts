@@ -45,4 +45,10 @@ export default class MatchesController {
       return res.status(500).json({ message: 'Error creating match' });
     }
   }
+
+  async leaderboard(req: Request, res: Response): Promise<void> {
+    const data = await this.service.leaderboard();
+    console.log(data);
+    res.status(200).json(data);
+  }
 }

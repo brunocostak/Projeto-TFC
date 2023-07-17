@@ -23,4 +23,9 @@ router.post('/', validateTokenMiddleware, validateMatche, (req: Request, res: Re
   matchesController.createMatche(req, res);
 });
 
+router.get(
+  '/leaderboard/home',
+  (req: Request, res: Response) => matchesController.leaderboard(req, res),
+);
+
 export default router;
