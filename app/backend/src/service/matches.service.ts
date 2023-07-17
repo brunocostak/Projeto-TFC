@@ -1,3 +1,4 @@
+import { ITeams } from '../Interfaces/ITeams';
 import TeamPerformance from '../Interfaces/ITeamPerforance';
 import { IMatcheCreate, IMatcheService } from '../Interfaces/IMatches';
 import MatchesModel from '../models/MatchModel';
@@ -49,20 +50,25 @@ export default class MatchesService {
       const teamMatches = dbData.filter(
         (match) => match.homeTeamId === team.id,
       );
-
-      return {
-        name: team.teamName,
-        totalPoints: MatchesService.calculateTotalPoints(teamMatches),
-        totalGames: teamMatches.length,
-        totalVictories: MatchesService.calculateTotalVictories(teamMatches, team.id),
-        totalDraws: MatchesService.calculateTotalDraws(teamMatches, team.id),
-        totalLosses: MatchesService.calculateTotalLosses(teamMatches, team.id),
-        goalsFavor: MatchesService.calculateGoalsFavor(teamMatches, team.id),
-        goalsOwn: MatchesService.calculateGoalsOwn(teamMatches, team.id),
-      };
+      return MatchesService.buildLeaderboard(teamMatches, team);
     });
     return leaderboard;
   }
+
+  private static buildLeaderboard = (match: IMatcheCreate[], team:ITeams) => ({
+    name: team.teamName,
+    totalPoints: MatchesService.calculateTotalPoints(match),
+    totalGames: match.length,
+    totalVictories: MatchesService.calculateTotalVictories(match, team.id),
+    totalDraws: MatchesService.calculateTotalDraws(match, team.id),
+    totalLosses: MatchesService.calculateTotalLosses(match, team.id),
+    goalsFavor: MatchesService.calculateGoalsFavor(match, team.id),
+    goalsOwn: MatchesService.calculateGoalsOwn(match, team.id),
+    goalsBalance: MatchesService.calculateGoalsFavor(match, team.id)
+    - MatchesService.calculateGoalsOwn(match, team.id),
+    efficiency: ((MatchesService.calculateTotalPoints(match)
+    / (match.length * 3)) * 100).toFixed(2),
+  });
 
   private static calculateTotalPoints(matches: IMatcheCreate[]): number {
     return matches.reduce((totalPoints, match) => {

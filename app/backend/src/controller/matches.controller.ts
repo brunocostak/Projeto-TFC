@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import MatchesService from '../service/matches.service';
+import TeamPerformance from '../Interfaces/ITeamPerforance';
 
 export default class MatchesController {
   constructor(private service = new MatchesService()) {}
@@ -47,8 +48,28 @@ export default class MatchesController {
   }
 
   async leaderboard(req: Request, res: Response): Promise<void> {
-    const data = await this.service.leaderboard();
-    console.log(data);
-    res.status(200).json(data);
+    const data: TeamPerformance[] | void = await this.service.leaderboard();
+
+    if (data) {
+      data.sort((a, b) => {
+        if (a.totalPoints !== b.totalPoints) {
+          return b.totalPoints - a.totalPoints;
+        }
+
+        if (a.totalVictories !== b.totalVictories) {
+          return b.totalVictories - a.totalVictories;
+        }
+
+        if (a.goalsBalance !== b.goalsBalance) {
+          return b.goalsBalance - a.goalsBalance;
+        }
+
+        return b.goalsFavor - a.goalsFavor;
+      });
+
+      res.status(200).json(data);
+    } else {
+      res.sendStatus(404);
+    }
   }
 }

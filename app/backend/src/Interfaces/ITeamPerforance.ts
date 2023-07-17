@@ -9,5 +9,7 @@ interface TeamPerformance {
   totalLosses: number;
   goalsFavor: number;
   goalsOwn: number;
+  goalsBalance: number;
+  efficiency: string;
 }
 export default TeamPerformance;
