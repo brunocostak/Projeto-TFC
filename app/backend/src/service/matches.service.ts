@@ -47,7 +47,7 @@ export default class MatchesService {
 
     const leaderboard: TeamPerformance[] = getAllTeams.map((team) => {
       const teamMatches = dbData.filter(
-        (match) => match.homeTeamId === team.id || match.awayTeamId === team.id,
+        (match) => match.homeTeamId === team.id,
       );
 
       return {
