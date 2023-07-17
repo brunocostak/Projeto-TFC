@@ -17,10 +17,9 @@ describe('User', () => {
     afterEach(() => {
         sinon.restore();
     });
-    // it('should return a token', async () => {
-    //     sinon.stub(UserModel, 'findOne').resolves(loginMock);
-    //     const res = await chai.request(app).post('/login').send(loginMock);
-    //     expect(res).to.have.status(200);
-    //     expect(res.body).to.be.eq(tokenMock);
-    // });
+    it('should return a token', async () => {
+        const response = await chai.request(app).post('/login').send(loginMock);
+        expect(response.status).to.be.equal(200);
+        expect(response.body).to.be.deep.equal(tokenMock);
+    });
 });

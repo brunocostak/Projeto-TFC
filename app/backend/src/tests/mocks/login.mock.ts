@@ -3,7 +3,7 @@ const loginMock = {
         "password": 'secret_admin',
       }
 const tokenMock = {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY4OTM0MTY1MSwiZXhwIjoxNjkwMjA1NjUxfQ.okzwNvR8UrTHS7yykj2edP7OAND469LI6HrwFM186sA"
+    "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjg5MzYwMjMzfQ.eAC5szAKmBZkq3kEiLB0ODAuPTa6BElWaw3TLdwG8fw"
   }
 export { tokenMock };
 export default loginMock;
