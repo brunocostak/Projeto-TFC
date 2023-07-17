@@ -48,28 +48,29 @@ export default class MatchesController {
   }
 
   async leaderboard(req: Request, res: Response): Promise<void> {
-    const data: TeamPerformance[] | void = await this.service.leaderboard();
-
+    const leaderboardType = req.path.includes('home') ? 'home' : 'away';
+    const data: TeamPerformance[] | void = await this.service.leaderboard(leaderboardType);
     if (data) {
-      data.sort((a, b) => {
-        if (a.totalPoints !== b.totalPoints) {
-          return b.totalPoints - a.totalPoints;
-        }
-
-        if (a.totalVictories !== b.totalVictories) {
-          return b.totalVictories - a.totalVictories;
-        }
-
-        if (a.goalsBalance !== b.goalsBalance) {
-          return b.goalsBalance - a.goalsBalance;
-        }
-
-        return b.goalsFavor - a.goalsFavor;
-      });
-
-      res.status(200).json(data);
-    } else {
-      res.sendStatus(404);
+      const sortedLeaderboard = MatchesController.sortLeaderboardData(data);
+      res.status(200).json(sortedLeaderboard);
     }
+  }
+
+  private static sortLeaderboardData(data: TeamPerformance[]): TeamPerformance[] {
+    return data.sort((a, b) => {
+      if (a.totalPoints !== b.totalPoints) {
+        return b.totalPoints - a.totalPoints;
+      }
+
+      if (a.totalVictories !== b.totalVictories) {
+        return b.totalVictories - a.totalVictories;
+      }
+
+      if (a.goalsBalance !== b.goalsBalance) {
+        return b.goalsBalance - a.goalsBalance;
+      }
+
+      return b.goalsFavor - a.goalsFavor;
+    });
   }
 }

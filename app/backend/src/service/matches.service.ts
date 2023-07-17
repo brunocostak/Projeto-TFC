@@ -42,13 +42,27 @@ export default class MatchesService {
     return result;
   }
 
-  async leaderboard(): Promise<TeamPerformance[] | void> {
+  // async leaderboardHome(): Promise<TeamPerformance[] | void> {
+  //   const dbData = await this.model.leaderboard();
+  //   const getAllTeams = await new TeamsService().findAll();
+
+  //   const leaderboard: TeamPerformance[] = getAllTeams.map((team) => {
+  //     const teamMatches = dbData.filter(
+  //       (match) => match.homeTeamId === team.id,
+  //     );
+  //     return MatchesService.buildLeaderboard(teamMatches, team);
+  //   });
+  //   return leaderboard;
+  // }
+
+  async leaderboard(leaderboardType: string): Promise<TeamPerformance[] | void> {
     const dbData = await this.model.leaderboard();
     const getAllTeams = await new TeamsService().findAll();
 
     const leaderboard: TeamPerformance[] = getAllTeams.map((team) => {
+      const leaderboardT = leaderboardType === 'away' ? 'awayTeamId' : 'homeTeamId';
       const teamMatches = dbData.filter(
-        (match) => match.homeTeamId === team.id,
+        (match) => match[leaderboardT] === team.id,
       );
       return MatchesService.buildLeaderboard(teamMatches, team);
     });
@@ -131,4 +145,9 @@ export default class MatchesService {
       return goalsOwn;
     }, 0);
   }
+
+  // private static calculateEfficiency(goalsFavor: number, goalsOwn: number): string {
+  //   const efficiency = (goalsFavor / (goalsFavor + goalsOwn)) * 100;
+  //   return efficiency.toFixed(2);
+  // }
 }

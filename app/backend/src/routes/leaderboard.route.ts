@@ -6,5 +6,5 @@ const router = Router();
 const matchesController = new MatchesController();
 
 router.get('/home', (req: Request, res: Response) => matchesController.leaderboard(req, res));
-
+router.get('/away', (req: Request, res: Response) => matchesController.leaderboard(req, res));
 export default router;
