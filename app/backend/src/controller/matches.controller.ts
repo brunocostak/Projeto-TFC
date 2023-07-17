@@ -59,18 +59,21 @@ export default class MatchesController {
   private static sortLeaderboardData(data: TeamPerformance[]): TeamPerformance[] {
     return data.sort((a, b) => {
       if (a.totalPoints !== b.totalPoints) {
-        return b.totalPoints - a.totalPoints;
+        return b.totalPoints - a.totalPoints; // Ordenar por total de pontos (decrescente)
       }
 
       if (a.totalVictories !== b.totalVictories) {
-        return b.totalVictories - a.totalVictories;
+        return b.totalVictories - a.totalVictories; // Ordenar por total de vitórias (decrescente)
       }
 
       if (a.goalsBalance !== b.goalsBalance) {
-        return b.goalsBalance - a.goalsBalance;
+        return b.goalsBalance - a.goalsBalance; // Ordenar por saldo de gols (decrescente)
       }
 
-      return b.goalsFavor - a.goalsFavor;
+      if (a.goalsFavor !== b.goalsFavor) {
+        return b.goalsFavor - a.goalsFavor; // Ordenar por gols a favor (decrescente)
+      }
+      return 0;
     });
   }
 }

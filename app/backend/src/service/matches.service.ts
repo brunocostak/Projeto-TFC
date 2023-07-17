@@ -69,27 +69,37 @@ export default class MatchesService {
     return leaderboard;
   }
 
-  private static buildLeaderboard = (match: IMatcheCreate[], team:ITeams) => ({
-    name: team.teamName,
-    totalPoints: MatchesService.calculateTotalPoints(match),
-    totalGames: match.length,
-    totalVictories: MatchesService.calculateTotalVictories(match, team.id),
-    totalDraws: MatchesService.calculateTotalDraws(match, team.id),
-    totalLosses: MatchesService.calculateTotalLosses(match, team.id),
-    goalsFavor: MatchesService.calculateGoalsFavor(match, team.id),
-    goalsOwn: MatchesService.calculateGoalsOwn(match, team.id),
-    goalsBalance: MatchesService.calculateGoalsFavor(match, team.id)
-    - MatchesService.calculateGoalsOwn(match, team.id),
-    efficiency: ((MatchesService.calculateTotalPoints(match)
-    / (match.length * 3)) * 100).toFixed(2),
-  });
+  private static buildLeaderboard = (match: IMatcheCreate[], team: ITeams) => {
+    const totalPoints = MatchesService.calculateTotalPoints(match, team.id);
+    const totalGames = match.length;
 
-  private static calculateTotalPoints(matches: IMatcheCreate[]): number {
+    return {
+      name: team.teamName,
+      totalPoints,
+      totalGames,
+      totalVictories: MatchesService.calculateTotalVictories(match, team.id),
+      totalDraws: MatchesService.calculateTotalDraws(match, team.id),
+      totalLosses: MatchesService.calculateTotalLosses(match, team.id),
+      goalsFavor: MatchesService.calculateGoalsFavor(match, team.id),
+      goalsOwn: MatchesService.calculateGoalsOwn(match, team.id),
+      goalsBalance: MatchesService.calculateGoalsFavor(match, team.id)
+      - MatchesService.calculateGoalsOwn(match, team.id),
+      efficiency: ((totalPoints / (totalGames * 3)) * 100).toFixed(2),
+    };
+  };
+
+  private static calculateTotalPoints(matches: IMatcheCreate[], teamId: number): number {
     return matches.reduce((totalPoints, match) => {
-      if (match.homeTeamGoals > match.awayTeamGoals) {
-        return totalPoints + 3;
-      } if (match.homeTeamGoals === match.awayTeamGoals) {
-        return totalPoints + 1;
+      if (
+        (match.homeTeamId === teamId && match.homeTeamGoals > match.awayTeamGoals)
+        || (match.awayTeamId === teamId && match.awayTeamGoals > match.homeTeamGoals)
+      ) {
+        return totalPoints + 3; // A equipe ganhou a partida, recebe 3 pontos
+      } if (
+        (match.homeTeamId === teamId && match.homeTeamGoals === match.awayTeamGoals)
+        || (match.awayTeamId === teamId && match.awayTeamGoals === match.homeTeamGoals)
+      ) {
+        return totalPoints + 1; // A partida terminou em empate, recebe 1 ponto
       }
       return totalPoints;
     }, 0);
@@ -138,9 +148,9 @@ export default class MatchesService {
   private static calculateGoalsOwn(matches: IMatcheCreate[], teamId: number): number {
     return matches.reduce((goalsOwn, match) => {
       if (match.homeTeamId === teamId) {
-        return goalsOwn + match.awayTeamGoals;
-      } if (match.awayTeamId === teamId) {
         return goalsOwn + match.homeTeamGoals;
+      } if (match.awayTeamId === teamId) {
+        return goalsOwn + match.awayTeamGoals;
       }
       return goalsOwn;
     }, 0);
