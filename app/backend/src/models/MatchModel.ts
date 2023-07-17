@@ -1,4 +1,4 @@
-import { IMatcheService } from '../Interfaces/IMatches';
+import { IMatcheService, IMatcheCreate } from '../Interfaces/IMatches';
 import SequelizeMatches from '../database/models/SequelizeMatches';
 import SequelizeTeams from '../database/models/SequelizeTeams';
 
@@ -43,5 +43,23 @@ export default class MatchesModel {
         },
       },
     );
+  }
+
+  async updateMatch(id: string, body: IMatcheService): Promise<void> {
+    await this.model.update(
+      {
+        homeTeamGoals: body.homeTeamGoals,
+        awayTeamGoals: body.awayTeamGoals,
+      },
+      {
+        where: {
+          id,
+        },
+      },
+    );
+  }
+
+  async createMatche(body: IMatcheService): Promise<IMatcheCreate> {
+    return this.model.create({ ...body, inProgress: true });
   }
 }

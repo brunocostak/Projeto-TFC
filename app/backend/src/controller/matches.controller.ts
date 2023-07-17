@@ -22,4 +22,27 @@ export default class MatchesController {
     await this.service.updateFinish(id);
     res.status(200).json({ message: 'Finished' });
   }
+
+  async updateMatch(req: Request, res: Response): Promise<void> {
+    const { id } = req.params;
+    await this.service.updateMatch(id, req.body);
+    res.status(200).json({ message: 'Updated matche' });
+  }
+
+  async createMatche(req: Request, res: Response): Promise<void | Response> {
+    try {
+      const dbData = await this.service.createMatche(req.body);
+      const result = {
+        id: dbData.id,
+        homeTeamId: dbData.homeTeamId,
+        homeTeamGoals: dbData.homeTeamGoals,
+        awayTeamId: dbData.awayTeamId,
+        awayTeamGoals: dbData.awayTeamGoals,
+        inProgress: dbData.inProgress,
+      };
+      return res.status(201).json(result);
+    } catch (error) {
+      return res.status(500).json({ message: 'Error creating match' });
+    }
+  }
 }

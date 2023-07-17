@@ -21,3 +21,12 @@ export interface IMatcheService {
     teamName: string;
   };
 }
+
+export interface IMatcheCreate {
+  id: number;
+  homeTeamId: number;
+  homeTeamGoals: number;
+  awayTeamId: number;
+  awayTeamGoals: number;
+  inProgress: boolean;
+}

@@ -1,4 +1,4 @@
-import { IMatcheService } from '../Interfaces/IMatches';
+import { IMatcheCreate, IMatcheService } from '../Interfaces/IMatches';
 import MatchesModel from '../models/MatchModel';
 
 export default class MatchesService {
@@ -28,5 +28,14 @@ export default class MatchesService {
 
   async updateFinish(id: string): Promise<void> {
     await this.model.updateFinish(id);
+  }
+
+  async updateMatch(id: string, body: IMatcheService): Promise<void> {
+    await this.model.updateMatch(id, body);
+  }
+
+  async createMatche(body: IMatcheService): Promise<IMatcheCreate> {
+    const result = await this.model.createMatche(body);
+    return result;
   }
 }
